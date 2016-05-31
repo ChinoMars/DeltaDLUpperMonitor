@@ -190,9 +190,10 @@ BOOL CDelta_dLDlg::OnInitDialog()
 	SetIcon(m_hIcon, FALSE);		// 设置小图标
 
 	// TODO: 在此添加额外的初始化代码
-	m_Measure_Comb.AddString(_T("long (25m--300m)"));
-	m_Measure_Comb.AddString(_T("mid  (2.5m--25m)"));
-	m_Measure_Comb.AddString(_T("short(10cm--2.5m)"));
+	m_Measure_Comb.AddString(_T("long (>50m)"));
+	m_Measure_Comb.AddString(_T("mid 1 (5m--50m)"));
+	m_Measure_Comb.AddString(_T("mid 2 (0.5m--5m)"));
+	m_Measure_Comb.AddString(_T("short (<0.5m)"));
 	m_Measure_Comb.SetCurSel(1);
 
 	m_ctllHIDdevices.ShowWindow(SW_HIDE);
@@ -1034,7 +1035,7 @@ HBRUSH CDelta_dLDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	switch(pWnd->GetDlgCtrlID())
 	{
 		case IDC_STATIC_TITLE:
-			pDC->SetTextColor(RGB(255,255,0));
+			pDC->SetTextColor(RGB(0x07,0x48,0x8c));
 			pDC->SelectObject(&m_font);
 			break;
 		default:
