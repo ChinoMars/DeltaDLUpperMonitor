@@ -67,7 +67,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkIncremental="2"
+				LinkIncremental="1"
 				AdditionalLibraryDirectories="F:\project\光纤臂长差测量\上位机程序\Delta_dL\Delta_dL"
 				GenerateDebugInformation="true"
 				SubSystem="2"
