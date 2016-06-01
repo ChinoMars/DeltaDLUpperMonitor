@@ -5,6 +5,8 @@
 #include "Delta_dL.h"
 #include "Delta_dLDlg.h"
 
+#include "EasySize.h"
+
 #include "fstream"
 #include "iostream"
 
@@ -157,6 +159,7 @@ BEGIN_MESSAGE_MAP(CDelta_dLDlg, CDialog)
 	ON_EN_CHANGE(IDC_EDIT_FILENAME, &CDelta_dLDlg::OnEnChangeEditFilename)
 	ON_BN_CLICKED(IDC_SAVE_btn, &CDelta_dLDlg::OnBnClickedSavebtn)
 	ON_WM_CTLCOLOR()
+	ON_WM_SIZE()
 END_MESSAGE_MAP()
 
 
@@ -210,8 +213,10 @@ BOOL CDelta_dLDlg::OnInitDialog()
 	m_Progress.SetPos(100);
 
 	// 设置标题字体字号
-	m_font.CreatePointFont(150,_T("宋体"),NULL);
-	//GetDlgItem(IDC_STATIC_TITLE)->SetFont(&m_font);
+	m_font.CreatePointFont(300,_T("宋体"),NULL);
+
+	// 用于调整窗口大小时自动调整控件大小
+	INIT_EASYSIZE;
 
 	//初始化写报告时用的Overlapped结构体
 	//偏移量设置为0
@@ -1035,7 +1040,7 @@ HBRUSH CDelta_dLDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 	switch(pWnd->GetDlgCtrlID())
 	{
 		case IDC_STATIC_TITLE:
-			pDC->SetTextColor(RGB(0x07,0x48,0x8c));
+			pDC->SetTextColor(RGB(0x00,0x32,0x73));
 			pDC->SelectObject(&m_font);
 			break;
 		default:
@@ -1044,4 +1049,46 @@ HBRUSH CDelta_dLDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
 
 	// TODO:  如果默认的不是所需画笔，则返回另一个画笔
 	return hbr;
+}
+
+
+
+void CDelta_dLDlg::OnSize(UINT nType, int cx, int cy)
+{
+	CDialog::OnSize(nType, cx, cy);
+
+	UPDATE_EASYSIZE;
+
+	/**
+	// TODO: 在此处添加消息处理程序代码
+	if(m_listRect.GetCount() > 0)
+	{
+		CRect dlgNow;
+		GetWindowRect(&dlgNow);
+		POSITION pos = m_listRect.GetHeadPosition();
+
+		CRect dlgSaved;
+		dlgSaved = m_listRect.GetNext(pos);
+
+		float x = dlgNow.Width() * 1.0 / dlgSaved.Width();
+		float y = dlgNow.Height() * 1.0 / dlgSaved.Height();
+		ClientToScreen(dlgNow);
+
+		CRect childSaved;
+
+		CWnd* pWnd = GetWindow(GW_CHILD);
+		while(pWnd)
+		{
+			childSaved = m_listRect.GetNext(pos);
+			childSaved.left = dlgNow.left + (childSaved.left - dlgSaved.left) * x;
+			childSaved.right = dlgNow.right + (childSaved.right - dlgSaved.right) * x;
+			childSaved.top = dlgNow.top + (childSaved.top - dlgSaved.top) * y;
+			childSaved.bottom = dlgNow.bottom + (childSaved.bottom - dlgSaved.bottom) * y;
+			ScreenToClient(childSaved);
+			pWnd->MoveWindow(childSaved);
+			pWnd = pWnd->GetNextWindow();
+		}
+	}
+	*/
+
 }

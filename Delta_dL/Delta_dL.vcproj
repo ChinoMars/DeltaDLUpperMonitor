@@ -51,7 +51,7 @@
 				RuntimeLibrary="1"
 				UsePrecompiledHeader="2"
 				WarningLevel="3"
-				DebugInformationFormat="4"
+				DebugInformationFormat="3"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -254,6 +254,10 @@
 			</File>
 			<File
 				RelativePath=".\Delta_dLDlg.h"
+				>
+			</File>
+			<File
+				RelativePath="C:\Users\Chino\AppData\Local\Temp\HZ$D.407.3915\EasySize.h"
 				>
 			</File>
 			<File

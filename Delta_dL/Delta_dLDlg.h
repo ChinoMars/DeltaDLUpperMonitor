@@ -7,9 +7,13 @@
 
 #include "CurveLine.h"
 
+#include "EasySize.h"
+
 // CDelta_dLDlg 对话框
 class CDelta_dLDlg : public CDialog
 {
+	// 声明 EasySize
+	DECLARE_EASYSIZE
 // 构造
 public:
 	CDelta_dLDlg(CWnd* pParent = NULL);	// 标准构造函数
@@ -73,4 +77,6 @@ public:
 	CFont m_font;
 	afx_msg void OnBnClickedSavebtn();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
+	CList<CRect,CRect> m_listRect;
+	afx_msg void OnSize(UINT nType, int cx, int cy);
 };
