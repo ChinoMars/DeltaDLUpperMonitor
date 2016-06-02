@@ -319,6 +319,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\iconmid.bmp"
+				>
+			</File>
+			<File
 				RelativePath=".\res\zjupin.bmp"
 				>
 			</File>

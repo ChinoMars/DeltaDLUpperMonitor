@@ -9,6 +9,7 @@
 #define IDR_MAINFRAME                   128
 #define IDB_BITMAP1                     131
 #define IDB_BITMAP2                     133
+#define IDB_BITMAP3                     134
 #define IDC_LIST1                       1000
 #define IDC_CONNECT_btn                 1002
 #define IDC_MEASURE_btn                 1003
@@ -31,14 +32,22 @@
 #define IDC_STATIC_TITLE                1023
 #define IDC_BUTTON1                     1025
 #define IDC_SAVE_btn                    1025
+#define IDC_STATIC_MI                   1026
+#define IDC_STATIC_DB                   1027
+#define IDC_STATIC_MHZ                  1028
+#define IDC_STATIC_RESTGROUP            1030
+#define IDC_STATIC_TITLEGROUP           1032
+#define IDC_STATIC_SUBTITLE             1033
+#define IDC_STATIC_INFOGROUP            1035
+#define IDC_STATIC_INFOFILENAME         1036
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        134
+#define _APS_NEXT_RESOURCE_VALUE        135
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1026
+#define _APS_NEXT_CONTROL_VALUE         1037
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif
