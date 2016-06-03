@@ -75,8 +75,10 @@ public:
 	CEdit m_Loss;
 	afx_msg void OnEnChangeEditFilename();
 	CFont m_font;
+	CButton m_Save_btn;
 	afx_msg void OnBnClickedSavebtn();
 	afx_msg HBRUSH OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor);
 	CList<CRect,CRect> m_listRect;
 	afx_msg void OnSize(UINT nType, int cx, int cy);
+	afx_msg void OnEnChangeEditProdid();
 };

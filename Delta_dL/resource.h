@@ -28,6 +28,7 @@
 #define MUBIAO_CURV_ID                  1020
 #define IDC_EDIT1                       1021
 #define IDC_EDIT_FILENAME               1021
+#define IDC_EDIT_PRODID                 1021
 #define IDC_CLOSE_btn2                  1022
 #define IDC_STATIC_TITLE                1023
 #define IDC_BUTTON1                     1025
@@ -39,7 +40,11 @@
 #define IDC_STATIC_TITLEGROUP           1032
 #define IDC_STATIC_SUBTITLE             1033
 #define IDC_STATIC_INFOGROUP            1035
-#define IDC_STATIC_INFOFILENAME         1036
+#define IDC_STATIC_PRODID               1036
+#define IDC_EDIT_PRODCODE               1037
+#define IDC_EDIT_OPERATOR               1039
+#define IDC_STATIC_PRODCODE             1040
+#define IDC_STATIC_OPERATOR             1041
 
 // Next default values for new objects
 // 
@@ -47,7 +52,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NEXT_RESOURCE_VALUE        135
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1037
+#define _APS_NEXT_CONTROL_VALUE         1042
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

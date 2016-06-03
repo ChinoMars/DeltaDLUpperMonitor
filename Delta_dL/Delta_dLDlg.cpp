@@ -10,6 +10,9 @@
 #include "fstream"
 #include "iostream"
 
+#include <shlwapi.h>
+#pragma comment(lib,"shlwapi.lib")
+
 using std::endl;
 using std::ofstream;
 using std::cin;
@@ -40,6 +43,8 @@ extern "C" {
 #define DATA_LENGTH 3990
 #define PACKAGE_NUM 132
 
+// 根目录
+CString ROOT_DIR = _T("C:\\Users\\Chino\\Desktop\\DeltaDLData");
 
 //用来保存找到的设备路径
 CString MyDevPathName=_T("");
@@ -131,6 +136,7 @@ void CDelta_dLDlg::DoDataExchange(CDataExchange* pDX)
 	CDialog::DoDataExchange(pDX);
 	DDX_Control(pDX, IDC_LIST1, m_ctllHIDdevices);
 	DDX_Control(pDX, IDC_MEASURE_btn, m_Measure_btn);
+	DDX_Control(pDX, IDC_SAVE_btn, m_Save_btn);
 	DDX_Control(pDX, IDC_VID, m_Vid);
 	DDX_Control(pDX, IDC_PID, m_Pid);
 	DDX_Control(pDX, IDC_MEASURE_COMBO, m_Measure_Comb);
@@ -156,10 +162,10 @@ BEGIN_MESSAGE_MAP(CDelta_dLDlg, CDialog)
 	//ON_WM_DEVICECHANGE() //此消息就是处理设备添加删除  
 	ON_BN_CLICKED(IDC_CLOSE_btn, &CDelta_dLDlg::OnBnClickedClosebtn)
 	ON_EN_CHANGE(IDC_EDIT2, &CDelta_dLDlg::OnEnChangeEdit2)
-	ON_EN_CHANGE(IDC_EDIT_FILENAME, &CDelta_dLDlg::OnEnChangeEditFilename)
 	ON_BN_CLICKED(IDC_SAVE_btn, &CDelta_dLDlg::OnBnClickedSavebtn)
 	ON_WM_CTLCOLOR()
 	ON_WM_SIZE()
+	ON_EN_CHANGE(IDC_EDIT_PRODID, &CDelta_dLDlg::OnEnChangeEditProdid)
 END_MESSAGE_MAP()
 
 BEGIN_EASYSIZE_MAP(CDelta_dLDlg)
@@ -183,8 +189,13 @@ BEGIN_EASYSIZE_MAP(CDelta_dLDlg)
 	EASYSIZE(IDC_SAVE_btn,IDC_CLOSE_btn2,ES_KEEPSIZE,ES_KEEPSIZE,ES_BORDER,0)
 	
 	EASYSIZE(IDC_STATIC_INFOGROUP,ES_BORDER,IDC_MEASURE_btn,ES_BORDER,ES_KEEPSIZE,0)
-	EASYSIZE(IDC_STATIC_INFOFILENAME,ES_BORDER,IDC_STATIC_INFOGROUP,ES_KEEPSIZE,IDC_STATIC_INFOGROUP,ES_VCENTER)
-	EASYSIZE(IDC_EDIT_FILENAME,ES_BORDER,IDC_STATIC_INFOFILENAME,ES_KEEPSIZE,IDC_STATIC_INFOFILENAME,ES_VCENTER)
+	EASYSIZE(IDC_STATIC_PRODID,ES_BORDER,IDC_STATIC_INFOGROUP,ES_KEEPSIZE,IDC_STATIC_INFOGROUP,ES_VCENTER)
+	EASYSIZE(IDC_STATIC_PRODCODE,ES_BORDER,IDC_STATIC_INFOGROUP,ES_KEEPSIZE,IDC_STATIC_INFOGROUP,ES_VCENTER)
+	EASYSIZE(IDC_STATIC_OPERATOR,ES_BORDER,IDC_STATIC_INFOGROUP,ES_KEEPSIZE,IDC_STATIC_INFOGROUP,ES_VCENTER)
+	EASYSIZE(IDC_EDIT_PRODID,ES_BORDER,IDC_STATIC_PRODID,ES_KEEPSIZE,IDC_STATIC_PRODID,ES_VCENTER)
+	EASYSIZE(IDC_EDIT_PRODCODE,ES_BORDER,IDC_STATIC_PRODID,ES_KEEPSIZE,IDC_STATIC_PRODID,ES_VCENTER)
+	EASYSIZE(IDC_EDIT_OPERATOR,ES_BORDER,IDC_STATIC_PRODID,ES_KEEPSIZE,IDC_STATIC_PRODID,ES_VCENTER)
+	
 	EASYSIZE(MUBIAO_CURV_ID,IDC_MEASURE_COMBO,ES_BORDER,ES_BORDER,IDC_STATIC_INFOGROUP,0)
 
 
@@ -229,6 +240,7 @@ BOOL CDelta_dLDlg::OnInitDialog()
 
 	m_ctllHIDdevices.ShowWindow(SW_HIDE);
 	m_Measure_btn.EnableWindow(FALSE);
+	//m_Save_btn.EnableWindow(FALSE);
 
 	// 隐藏FSR项
 	m_FSR.ShowWindow(SW_HIDE);
@@ -245,6 +257,16 @@ BOOL CDelta_dLDlg::OnInitDialog()
 
 	// 用于调整窗口大小时自动调整控件大小
 	INIT_EASYSIZE;
+
+	// 创建数据存储目录
+	if (!PathIsDirectory(ROOT_DIR))
+	{
+		if (!CreateDirectory(ROOT_DIR, NULL))
+		{
+			MessageBox(_T("创建数据目录失败"));
+		}
+	}
+
 
 	//初始化写报告时用的Overlapped结构体
 	//偏移量设置为0
@@ -277,7 +299,7 @@ BOOL CDelta_dLDlg::OnInitDialog()
 	}
 
 	//创建一个读报告的线程（处于挂起状态）
- pReadReportThread=AfxBeginThread(ReadReportThread,
+	pReadReportThread=AfxBeginThread(ReadReportThread,
 		                                this,
 									THREAD_PRIORITY_NORMAL,
 									0,
@@ -308,6 +330,8 @@ BOOL CDelta_dLDlg::OnInitDialog()
 
 	return TRUE;  // 除非将焦点设置到控件，否则返回 TRUE
 }
+
+
 
 
 void CDelta_dLDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -608,7 +632,7 @@ UINT ReadReportThread(LPVOID pParam)
 
 	//将参数pParam取出，并转换为CMyUsbHidTestAppDlg型指针，
 	//以供下面调用其成员函数。
-	 pAppDlg=( CDelta_dLDlg*)pParam;
+	pAppDlg=( CDelta_dLDlg*)pParam;
     
     
 	//该线程是个死循环，直到程序退出时，它才退出
@@ -663,6 +687,7 @@ UINT ReadReportThread(LPVOID pParam)
 char draw_flag = 0;
 char  measure_done = 1;
 float dL,Loss,n_zheshelv;
+char save_flag = 0;
 void Data_process(LPVOID pParam)
 {
 	CDelta_dLDlg *pAppDlg;
@@ -680,6 +705,7 @@ void Data_process(LPVOID pParam)
 		{
 			pAppDlg->m_PRO.SetWindowText(_T("测量中："));
 			pAppDlg->m_Progress.SetPos(ReadReportBuffer[4]);
+			save_flag = 0;
 		}
 	}
 	else if (ReadReportBuffer[1] == 0x40)
@@ -728,6 +754,7 @@ void Data_process(LPVOID pParam)
 			//}
 			//ofs.close();
 			draw_flag = 1;
+			save_flag = 1;
 		}
 	}
 
@@ -815,42 +842,54 @@ void CDelta_dLDlg::OnTimer(UINT_PTR nIDEvent)
 				DrawCurve(*drawline,MUBIAO_CURV_ID);
 			}
 
-			//将数据保存到文件
-			char file_name_str[200];
-			CEdit* pEdit= (CEdit *) GetDlgItem(IDC_EDIT_FILENAME);
-			CString cond_str,temp_str;
-			pEdit->GetWindowText(cond_str);
+			m_Save_btn.EnableWindow(TRUE);
 
-			CTime tm; tm=CTime::GetCurrentTime();
-			CString time_str = tm.Format(_T("%Y%m%d_%H_%M_%S"));
+			// TODO 该部分取消自动保存，改为手动保存
+			////将数据保存到文件
+			//char file_name_str[200];
+			//CEdit* pEdit= (CEdit *) GetDlgItem(IDC_EDIT_FILENAME);
+			//CString cond_str,temp_str;
+			//pEdit->GetWindowText(cond_str);
+
+			//CTime tm; tm=CTime::GetCurrentTime();
+			//CString time_str = tm.Format(_T("%Y%m%d_%H_%M_%S"));
 
 
-			CString f_n;
-			f_n.Format(_T("%s_%s.txt"),cond_str,time_str);
-			//sprintf(file_name_str,_T("%s_%s.txt"),cond_str.GetBuffer(),time_str.GetBuffer());
+			//CString f_n;
+			//f_n.Format(_T("%s_%s.txt"),cond_str,time_str);
+			////sprintf(file_name_str,_T("%s_%s.txt"),cond_str.GetBuffer(),time_str.GetBuffer());
 
-			//创建文件
-			ofstream ofs(f_n.GetBuffer());
-			
-				
-				
+			////创建文件
+			//ofstream ofs(f_n.GetBuffer());
+			//
+			//	
+			//	
 
-			ofs<<"测量时间："<<CT2A(time_str)<<endl; 
-			ofs.precision(6);
-			ofs<<"插损："<<Loss<<"dB"<<endl;
-			ofs<<"长度差："<<dL<<"m"<<endl;
-			ofs<<"折射率："<<n_zheshelv<<endl;
-			ofs.precision(4);
-			for (int i = 0;i < DATA_LENGTH;i++)
-			{
-				ofs<<raw_data[i]/800.0<<endl;
-			}
-			ofs.close();
+			//ofs<<"测量时间："<<CT2A(time_str)<<endl; 
+			//ofs.precision(6);
+			//ofs<<"插损："<<Loss<<"dB"<<endl;
+			//ofs<<"长度差："<<dL<<"m"<<endl;
+			//ofs<<"折射率："<<n_zheshelv<<endl;
+			//ofs.precision(4);
+			//for (int i = 0;i < DATA_LENGTH;i++)
+			//{
+			//	ofs<<raw_data[i]/800.0<<endl;
+			//}
+			//ofs.close();
 
 			draw_flag = 0;
 			measure_done = 1;
 		}
 
+		// 测量未完成禁止保存
+		if (save_flag)
+		{
+			m_Measure_btn.EnableWindow(TRUE);
+		}
+		else
+		{
+			m_Measure_btn.EnableWindow(FALSE);
+		}
 	}
 	CDialog::OnTimer(nIDEvent);
 }
@@ -1044,20 +1083,108 @@ void CDelta_dLDlg::DrawCurve( CCurveLine& Curve,int ID )
 	memDC.DeleteDC();
 	memBitmap.DeleteObject();
 }
-void CDelta_dLDlg::OnEnChangeEditFilename()
-{
-	// TODO:  如果该控件是 RICHEDIT 控件，则它将不会
-	// 发送该通知，除非重写 CDialog::OnInitDialog()
-	// 函数并调用 CRichEditCtrl().SetEventMask()，
-	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
-
-	// TODO:  在此添加控件通知处理程序代码
-}
 
 void CDelta_dLDlg::OnBnClickedSavebtn()
 {
-	// TODO: 在此添加控件通知处理程序代码
-	// 手动保存数据
+	// 检查是否已设置文件名
+	CEdit* pEditTmp = (CEdit*) GetDlgItem(IDC_EDIT_PRODID);
+	CString prodId_str;
+	pEditTmp->GetWindowText(prodId_str);
+
+	if (prodId_str.IsEmpty())
+	{
+		MessageBox(_T("请输入产品型号"));
+		return;
+	}
+
+	CString prodCode_str;
+	pEditTmp = (CEdit*) GetDlgItem(IDC_EDIT_PRODCODE);
+	pEditTmp->GetWindowText(prodCode_str);
+
+	if (prodCode_str.IsEmpty())
+	{
+		MessageBox(_T("请输入产品编号"));
+		return;
+	}
+
+	CString operatorName;
+	pEditTmp = (CEdit*) GetDlgItem(IDC_EDIT_OPERATOR);
+	pEditTmp->GetWindowText(operatorName);
+	
+	// 目录名格式：ProdId+prodCode
+	CString dirName;
+	dirName.Format(_T("%s_%s"), prodId_str, prodCode_str);
+
+	// 检测目录是否存在，若不存在则创建
+	CString fullDir;
+	fullDir.Format(_T("%s\\%s"), ROOT_DIR, dirName);
+	if (!PathIsDirectory(fullDir))
+	{
+		if (!CreateDirectory(fullDir,NULL))
+		{
+			MessageBox(_T("创建数据目录失败，请检查产品型号和编号是否合法"));
+		}
+	}
+	
+	// 数据文件名格式：ProdId+ProdCode()+Time
+	CTime tm = CTime::GetCurrentTime();
+	CString time_str = tm.Format(_T("%Y%m%d_%H_%M_%S"));
+	CString fileName;
+	//fileName.Format(_T("%s\\%s%s_%s.txt"),fullDir,prodId_str,prodCode_str.Right(3),time_str);
+	fileName.Format(_T("%s\\%s.txt"),fullDir,time_str);
+
+	// 创建文件
+	ofstream ofs(fileName.GetBuffer());
+
+	ofs<<"测量时间："<<CT2A(time_str)<<endl; 
+	ofs<<"操作人："<<CT2A(operatorName)<<endl;
+	ofs.precision(6);
+	ofs<<"插损："<<Loss<<"dB"<<endl;
+	ofs<<"长度差："<<dL<<"m"<<endl;
+	ofs<<"折射率："<<n_zheshelv<<endl;
+	ofs.precision(4);
+	for (int i = 0;i < DATA_LENGTH;i++)
+	{
+		ofs<<raw_data[i]/800.0<<endl;
+	}
+	ofs.close();
+
+	
+
+	
+
+	////将数据保存到文件
+	//char file_name_str[200];
+	//CEdit* pEdit= (CEdit *) GetDlgItem(IDC_EDIT_PRODID);
+	//CString cond_str,temp_str;
+	//pEdit->GetWindowText(cond_str);
+
+	//CTime tm; tm=CTime::GetCurrentTime();
+	//CString time_str = tm.Format(_T("%Y%m%d_%H_%M_%S"));
+
+
+	//CString f_n;
+	//f_n.Format(_T("%s_%s.txt"),cond_str,time_str);
+	////sprintf(file_name_str,_T("%s_%s.txt"),cond_str.GetBuffer(),time_str.GetBuffer());
+
+	////创建文件
+	//ofstream ofs(f_n.GetBuffer());
+
+
+
+
+	//ofs<<"测量时间："<<CT2A(time_str)<<endl; 
+	//ofs.precision(6);
+	//ofs<<"插损："<<Loss<<"dB"<<endl;
+	//ofs<<"长度差："<<dL<<"m"<<endl;
+	//ofs<<"折射率："<<n_zheshelv<<endl;
+	//ofs.precision(4);
+	//for (int i = 0;i < DATA_LENGTH;i++)
+	//{
+	//	ofs<<raw_data[i]/800.0<<endl;
+	//}
+	//ofs.close();
+	
 }
 
 HBRUSH CDelta_dLDlg::OnCtlColor(CDC* pDC, CWnd* pWnd, UINT nCtlColor)
@@ -1119,4 +1246,14 @@ void CDelta_dLDlg::OnSize(UINT nType, int cx, int cy)
 	}
 	*/
 
+}
+
+void CDelta_dLDlg::OnEnChangeEditProdid()
+{
+	// TODO:  如果该控件是 RICHEDIT 控件，则它将不会
+	// 发送该通知，除非重写 CDialog::OnInitDialog()
+	// 函数并调用 CRichEditCtrl().SetEventMask()，
+	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
+
+	// TODO:  在此添加控件通知处理程序代码
 }
