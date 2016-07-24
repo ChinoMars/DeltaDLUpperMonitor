@@ -40,11 +40,17 @@ extern "C" {
 
 
 //
-#define DATA_LENGTH 3990
-#define PACKAGE_NUM 132
+#define DATA_LENGTH 4000
+#define PACKAGE_NUM 133
+#define PACKAGE_DATA_LEN 30
+
 
 // 根目录
-CString ROOT_DIR = _T("C:\\Users\\Chino\\Desktop\\DeltaDLData");
+//CString ROOT_DIR = _T("C:\\Users\\Chino\\Desktop\\DeltaDLData");
+//CString ROOT_DIR = _T("C:\\Users\\Administrator\\Desktop\\DeltaDLData");
+CString ROOT_DIR = _T("D:\\Delta_dL\\DeltaDLData");
+
+
 
 //用来保存找到的设备路径
 CString MyDevPathName=_T("");
@@ -81,7 +87,7 @@ UCHAR ReadReportBuffer[512]={0};
 //标记当前缓冲区的数据是否传输
 UCHAR Send_flag = 0;
 
-unsigned short raw_data[4000];
+unsigned short raw_data[DATA_LENGTH];
 
 
 UINT WriteReportThread(LPVOID pParam);
@@ -239,7 +245,7 @@ BOOL CDelta_dLDlg::OnInitDialog()
 	m_Measure_Comb.SetCurSel(1);
 
 	m_ctllHIDdevices.ShowWindow(SW_HIDE);
-	m_Measure_btn.EnableWindow(FALSE);
+	m_Measure_btn.EnableWindow(TRUE);
 	//m_Save_btn.EnableWindow(FALSE);
 
 	// 隐藏FSR项
@@ -741,9 +747,9 @@ void Data_process(LPVOID pParam)
 	{
 		int temp;
 		temp = (ReadReportBuffer[3]<<8)+ReadReportBuffer[4];
-		for (int i= 0;i<30;i++)
+		for (int i= 0;i<PACKAGE_DATA_LEN;i++)
 		{
-			raw_data[temp*30+i] = (ReadReportBuffer[i*2+5]<<8)+ReadReportBuffer[i*2+6];
+			raw_data[temp*PACKAGE_DATA_LEN+i] = (ReadReportBuffer[i*2+5]<<8)+ReadReportBuffer[i*2+6];
 		}
 		if (PACKAGE_NUM == temp)
 		{
@@ -831,7 +837,7 @@ void CDelta_dLDlg::OnTimer(UINT_PTR nIDEvent)
 		if (draw_flag)
 		{
 			//实时的将数据画出
-			CCurveLine* drawline = new CCurveLine(raw_data,3990);
+			CCurveLine* drawline = new CCurveLine(raw_data,DATA_LENGTH);
 			if(drawline->InitSuccessFlag)
 			{
 				CRect rect;
@@ -888,7 +894,7 @@ void CDelta_dLDlg::OnTimer(UINT_PTR nIDEvent)
 		}
 		else
 		{
-			m_Measure_btn.EnableWindow(FALSE);
+			m_Measure_btn.EnableWindow(TRUE);
 		}
 	}
 	CDialog::OnTimer(nIDEvent);
@@ -972,7 +978,7 @@ void CDelta_dLDlg::OnBnClickedClosebtn()
 	//设置设备状态为未找到
 	MyDevFound=FALSE;
 	//修改按键使能情况
-	m_Measure_btn.EnableWindow(FALSE);
+	m_Measure_btn.EnableWindow(TRUE);
 
 	m_Connect_state.SetWindowText(_T("未检测到设备"));
 //	GetDlgItem(IDC_BUTTON_Open)->EnableWindow(TRUE);
@@ -1145,7 +1151,8 @@ void CDelta_dLDlg::OnBnClickedSavebtn()
 	ofs.precision(4);
 	for (int i = 0;i < DATA_LENGTH;i++)
 	{
-		ofs<<raw_data[i]/800.0<<endl;
+		ofs << raw_data[i] << endl; // for test
+		//ofs<<raw_data[i]/800.0<<endl;
 	}
 	ofs.close();
 

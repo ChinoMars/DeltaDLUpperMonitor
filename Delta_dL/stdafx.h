@@ -6,6 +6,8 @@
 
 #define WINVER 0x0500 //自己增加的
 
+//#pragma comment(lib, "windowscodecs.lib")
+
 
 #ifndef _SECURE_ATL
 #define _SECURE_ATL 1
