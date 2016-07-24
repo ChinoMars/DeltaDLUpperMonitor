@@ -1126,8 +1126,8 @@ void CDelta_dLDlg::OnBnClickedSavebtn()
 	ofs.precision(4);
 	for (int i = 0;i < DATA_LENGTH;i++)
 	{
-		if(i%10 == 0)
-			ofs << raw_data[i] << endl; // for test
+		if(i%10 == 0) // for release version
+			ofs << raw_data[i] << endl; // for inner test version
 		//ofs<<raw_data[i]/800.0<<endl;
 	}
 	ofs.close();

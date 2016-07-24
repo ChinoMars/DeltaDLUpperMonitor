@@ -107,7 +107,8 @@ CCurveLine::CCurveLine( unsigned short *pBuf,int length )
 	PointData = new double[PointNum];
 	for(int i = 0;i < PointNum;i++)
 	{
-		PointData[i] = 0-pBuf[i]/800.0;
+		//PointData[i] = 0-pBuf[i]/800.0;
+		PointData[i] = 0-pBuf[i]/354.0;
 	}
 
 	InitSuccessFlag = 1;
