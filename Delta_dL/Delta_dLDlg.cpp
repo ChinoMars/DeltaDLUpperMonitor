@@ -166,12 +166,12 @@ BEGIN_MESSAGE_MAP(CDelta_dLDlg, CDialog)
 	ON_CBN_SELCHANGE(IDC_MEASURE_COMBO, &CDelta_dLDlg::OnCbnSelchangeMeasureCombo)
 	ON_MESSAGE(WM_DEVICECHANGE, OnMyDeviceChange)
 	//ON_WM_DEVICECHANGE() //此消息就是处理设备添加删除  
-	ON_BN_CLICKED(IDC_CLOSE_btn, &CDelta_dLDlg::OnBnClickedClosebtn)
 	ON_EN_CHANGE(IDC_EDIT2, &CDelta_dLDlg::OnEnChangeEdit2)
 	ON_BN_CLICKED(IDC_SAVE_btn, &CDelta_dLDlg::OnBnClickedSavebtn)
 	ON_WM_CTLCOLOR()
 	ON_WM_SIZE()
 	ON_EN_CHANGE(IDC_EDIT_PRODID, &CDelta_dLDlg::OnEnChangeEditProdid)
+	ON_BN_CLICKED(IDC_CLOSE_btn, &CDelta_dLDlg::OnBnClickedClosebtn)
 END_MESSAGE_MAP()
 
 BEGIN_EASYSIZE_MAP(CDelta_dLDlg)
@@ -960,31 +960,6 @@ afx_msg LRESULT  CDelta_dLDlg::OnMyDeviceChange(WPARAM wParam, LPARAM lParam)
 			return TRUE;
 	} 
 }
-void CDelta_dLDlg::OnBnClickedClosebtn()
-{
-	// TODO: 在此添加控件通知处理程序代码
-	//如果读数据的句柄不是无效句柄，则关闭之
-	KillTimer(1);
-	if(hReadHandle!=INVALID_HANDLE_VALUE)
-	{
-		CloseHandle(hReadHandle);
-		hReadHandle=INVALID_HANDLE_VALUE;
-	}
-	if(hWriteHandle!=INVALID_HANDLE_VALUE)
-	{
-		CloseHandle(hWriteHandle);
-		hWriteHandle=INVALID_HANDLE_VALUE;
-	}
-	//设置设备状态为未找到
-	MyDevFound=FALSE;
-	//修改按键使能情况
-	m_Measure_btn.EnableWindow(TRUE);
-
-	m_Connect_state.SetWindowText(_T("未检测到设备"));
-//	GetDlgItem(IDC_BUTTON_Open)->EnableWindow(TRUE);
-//	GetDlgItem(IDC_BUTTON_Close)->EnableWindow(FALSE);
-//	GetDlgItem(IDC_BUTTON_Send)->EnableWindow(FALSE);
-}
 
 void CDelta_dLDlg::OnEnChangeEdit2()
 {
@@ -1151,7 +1126,8 @@ void CDelta_dLDlg::OnBnClickedSavebtn()
 	ofs.precision(4);
 	for (int i = 0;i < DATA_LENGTH;i++)
 	{
-		ofs << raw_data[i] << endl; // for test
+		if(i%10 == 0)
+			ofs << raw_data[i] << endl; // for test
 		//ofs<<raw_data[i]/800.0<<endl;
 	}
 	ofs.close();
@@ -1263,4 +1239,29 @@ void CDelta_dLDlg::OnEnChangeEditProdid()
 	// 同时将 ENM_CHANGE 标志“或”运算到掩码中。
 
 	// TODO:  在此添加控件通知处理程序代码
+}
+
+void CDelta_dLDlg::OnBnClickedClosebtn()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	KillTimer(1);
+	if(hReadHandle!=INVALID_HANDLE_VALUE)
+	{
+		CloseHandle(hReadHandle);
+		hReadHandle=INVALID_HANDLE_VALUE;
+	}
+	if(hWriteHandle!=INVALID_HANDLE_VALUE)
+	{
+		CloseHandle(hWriteHandle);
+		hWriteHandle=INVALID_HANDLE_VALUE;
+	}
+	//设置设备状态为未找到
+	MyDevFound=FALSE;
+	//修改按键使能情况
+	m_Measure_btn.EnableWindow(TRUE);
+
+	m_Connect_state.SetWindowText(_T("未检测到设备"));
+	//	GetDlgItem(IDC_BUTTON_Open)->EnableWindow(TRUE);
+	//	GetDlgItem(IDC_BUTTON_Close)->EnableWindow(FALSE);
+	//	GetDlgItem(IDC_BUTTON_Send)->EnableWindow(FALSE);
 }

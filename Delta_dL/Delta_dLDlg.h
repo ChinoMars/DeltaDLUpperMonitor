@@ -63,7 +63,6 @@ public:
 	afx_msg void OnTimer(UINT_PTR nIDEvent);
 	afx_msg void OnCbnSelchangeMeasureCombo();
 	afx_msg LRESULT OnMyDeviceChange(WPARAM wParam, LPARAM lParam);
-	afx_msg void OnBnClickedClosebtn();
 	CEdit m_Connect_state;
 	CEdit m_FSR;
 	CEdit m_DeltL;
@@ -81,4 +80,5 @@ public:
 	CList<CRect,CRect> m_listRect;
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnEnChangeEditProdid();
+	afx_msg void OnBnClickedClosebtn();
 };
