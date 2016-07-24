@@ -4,7 +4,6 @@
 
 # ignore dir.s
 /Debug
-/Release
+
 
 /Delta_dL/Debug
-/Delta_dL/Release
