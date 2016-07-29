@@ -199,6 +199,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\HelpDlg.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\hid.lib"
 				>
 			</File>
@@ -212,6 +216,10 @@
 			</File>
 			<File
 				RelativePath=".\setupapi.lib"
+				>
+			</File>
+			<File
+				RelativePath=".\StaticHelp_Dlg.cpp"
 				>
 			</File>
 			<File
@@ -261,6 +269,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\HelpDlg.h"
+				>
+			</File>
+			<File
 				RelativePath=".\hidclass.h"
 				>
 			</File>
@@ -282,6 +294,10 @@
 			</File>
 			<File
 				RelativePath=".\Resource.h"
+				>
+			</File>
+			<File
+				RelativePath=".\StaticHelp_Dlg.h"
 				>
 			</File>
 			<File

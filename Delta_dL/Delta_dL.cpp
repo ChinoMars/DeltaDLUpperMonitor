@@ -58,6 +58,14 @@ BOOL CDelta_dLApp::InitInstance()
 	// 例如修改为公司或组织名
 	SetRegistryKey(_T("应用程序向导生成的本地应用程序"));
 
+
+	// 设置文本
+	//CStringArray helpText;
+	//helpText.Add(_T("光纤长度操作说明：\n"));
+	//CString helpText = _T("光线长度操作说明：\n");
+	//m_help.SetWindowText(helpText);
+
+
 	CDelta_dLDlg dlg;
 	m_pMainWnd = &dlg;
 	INT_PTR nResponse = dlg.DoModal();

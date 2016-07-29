@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Delta_dL.h"
 #include "Delta_dLDlg.h"
+#include "HelpDlg.h"
 
 #include "EasySize.h"
 
@@ -41,6 +42,7 @@ extern "C" {
 
 //
 #define DATA_LENGTH 4000
+#define DRAW_DATA_LENGTH 400
 #define PACKAGE_NUM 133
 #define PACKAGE_DATA_LEN 30
 
@@ -48,7 +50,8 @@ extern "C" {
 // 根目录
 //CString ROOT_DIR = _T("C:\\Users\\Chino\\Desktop\\DeltaDLData");
 //CString ROOT_DIR = _T("C:\\Users\\Administrator\\Desktop\\DeltaDLData");
-CString ROOT_DIR = _T("D:\\Delta_dL\\DeltaDLData");
+//CString ROOT_DIR = _T("D:\\Delta_dL\\DeltaDLData");
+CString ROOT_DIR = _T("C:\\DeltaDLData");
 
 
 
@@ -88,6 +91,7 @@ UCHAR ReadReportBuffer[512]={0};
 UCHAR Send_flag = 0;
 
 unsigned short raw_data[DATA_LENGTH];
+unsigned short draw_data[DRAW_DATA_LENGTH];
 
 
 UINT WriteReportThread(LPVOID pParam);
@@ -172,6 +176,7 @@ BEGIN_MESSAGE_MAP(CDelta_dLDlg, CDialog)
 	ON_WM_SIZE()
 	ON_EN_CHANGE(IDC_EDIT_PRODID, &CDelta_dLDlg::OnEnChangeEditProdid)
 	ON_BN_CLICKED(IDC_CLOSE_btn, &CDelta_dLDlg::OnBnClickedClosebtn)
+	ON_BN_CLICKED(IDC_HELP_btn, &CDelta_dLDlg::OnBnClickedHelpbtn)
 END_MESSAGE_MAP()
 
 BEGIN_EASYSIZE_MAP(CDelta_dLDlg)
@@ -193,6 +198,8 @@ BEGIN_EASYSIZE_MAP(CDelta_dLDlg)
 	EASYSIZE(IDC_CONNECT_btn,IDC_MEASURE_btn,ES_KEEPSIZE,IDC_CLOSE_btn2,ES_BORDER,0)
 	EASYSIZE(IDC_CLOSE_btn2,IDC_CONNECT_btn,ES_KEEPSIZE,IDC_SAVE_btn,ES_BORDER,0)
 	EASYSIZE(IDC_SAVE_btn,IDC_CLOSE_btn2,ES_KEEPSIZE,ES_KEEPSIZE,ES_BORDER,0)
+	EASYSIZE(IDC_HELP_btn,IDC_HELP_btn,ES_KEEPSIZE,ES_KEEPSIZE,ES_BORDER,0)
+	
 	
 	EASYSIZE(IDC_STATIC_INFOGROUP,ES_BORDER,IDC_MEASURE_btn,ES_BORDER,ES_KEEPSIZE,0)
 	EASYSIZE(IDC_STATIC_PRODID,ES_BORDER,IDC_STATIC_INFOGROUP,ES_KEEPSIZE,IDC_STATIC_INFOGROUP,ES_VCENTER)
@@ -581,7 +588,7 @@ void CDelta_dLDlg::OnBnClickedConnectbtn()
 	}
 	if (i==device_num)
 	{
-		MessageBox(_T("There is no such HID device..."));
+		MessageBox(_T("未找到HID设备"));
 	}
 
 	//如果设备已经找到，那么应该使能各操作按钮，并同时禁止打开设备按钮
@@ -837,7 +844,16 @@ void CDelta_dLDlg::OnTimer(UINT_PTR nIDEvent)
 		if (draw_flag)
 		{
 			//实时的将数据画出
-			CCurveLine* drawline = new CCurveLine(raw_data,DATA_LENGTH);
+			//CCurveLine* drawline = new CCurveLine(raw_data,DATA_LENGTH);
+			
+
+			// generate draw data with 400 length
+			for( int i = 0; i < DRAW_DATA_LENGTH; ++i)
+			{
+				draw_data[i] = raw_data[(i*DATA_LENGTH/DRAW_DATA_LENGTH)];
+			}
+
+			CCurveLine* drawline = new CCurveLine(draw_data, DRAW_DATA_LENGTH);
 			if(drawline->InitSuccessFlag)
 			{
 				CRect rect;
@@ -1265,3 +1281,13 @@ void CDelta_dLDlg::OnBnClickedClosebtn()
 	//	GetDlgItem(IDC_BUTTON_Close)->EnableWindow(FALSE);
 	//	GetDlgItem(IDC_BUTTON_Send)->EnableWindow(FALSE);
 }
+
+void CDelta_dLDlg::OnBnClickedHelpbtn()
+{
+	// TODO: 在此添加控件通知处理程序代码
+	//CHelpDlg *pDlg = new CHelpDlg;
+	//pDlg->Create(IDD_STATIC_HELP,this);
+	//pDlg->ShowWindow(SW_SHOW);
+	MessageBox(_T("光纤长度精密测量仪操作说明：\n\n（1）光纤长度精密测量仪属于精密类光纤产品，使用与搬运时注意防震与跌落。\n\n（2）本设备仅适用于普通单模光纤，目前暂不支持特种光纤如保偏光纤等偏振敏感光纤干涉仪的臂长差测试。\n\n（3）本设备测量范围0-400米之间粗分为四挡量程。对于有些待测光纤臂长差介于两档之间的光纤链路，虽然两档都可以得到测量结果的情况，应当选择量程使得测量的波数落在6-36之间，波数越接近此值，测量结果越准确。\n\n（4）点击“保存数据”按钮，数据保存位置在硬盘：C：/ DeltaDLData目录下。子目录名称为：输入的型号+产品编号名，保存的文件名称为测量日期时间格式命名的文件名，文件形式为*.txt格式。\n\n（5）由于光纤存在色散效应，不同测试光波长对应有不同的色散引起的光信号延迟效应，本设备测试光波长对应于C 波段，因此测量结果对应于C 波段光纤长度。\n\n（6）不同光纤适配器连接时由于存在回波引起的干扰以及匹配不善引入的间隙不确定，不同光纤适配器连接时需要匹配转接。并且尽量减少连接器数量。\n\n（7）光纤接口连接不同待测元件连接器时，由于连接器接触其附带的灰尘将引起光路连接不良，具体表现链路损耗增加。因此需要及时确保待测元件接头清洁无灰尘。\n\n（8）光纤接口经使用不善将引起光路连接不良、损耗明显增加情况下，需要清洁面板内的光纤接头，具体步骤打开机箱上盖板后，退出面板内部光纤连接器接头螺纹，按照清洁光纤接头做法清洗光纤连接头后，重新装入面板内连接器并恢复机箱原始状态。"));
+}
+

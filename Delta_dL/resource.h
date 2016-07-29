@@ -10,6 +10,8 @@
 #define IDB_BITMAP1                     131
 #define IDB_BITMAP2                     133
 #define IDB_BITMAP3                     134
+#define IDD_HELP                        135
+#define IDD_STATIC_HELP                 136
 #define IDC_LIST1                       1000
 #define IDC_CONNECT_btn                 1002
 #define IDC_MEASURE_btn                 1003
@@ -29,6 +31,7 @@
 #define IDC_EDIT1                       1021
 #define IDC_EDIT_FILENAME               1021
 #define IDC_EDIT_PRODID                 1021
+#define IDC_HELP_CONTENT                1021
 #define IDC_CLOSE_btn2                  1022
 #define IDC_STATIC_TITLE                1023
 #define IDC_BUTTON1                     1025
@@ -45,14 +48,16 @@
 #define IDC_EDIT_OPERATOR               1039
 #define IDC_STATIC_PRODCODE             1040
 #define IDC_STATIC_OPERATOR             1041
+#define IDC_HELP_btn                    1043
+#define IDC_SCROLLBAR1                  1044
 
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        135
+#define _APS_NEXT_RESOURCE_VALUE        137
 #define _APS_NEXT_COMMAND_VALUE         32771
-#define _APS_NEXT_CONTROL_VALUE         1042
+#define _APS_NEXT_CONTROL_VALUE         1045
 #define _APS_NEXT_SYMED_VALUE           101
 #endif
 #endif

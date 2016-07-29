@@ -26,6 +26,9 @@ public:
 // й╣ож
 
 	DECLARE_MESSAGE_MAP()
+
+public:
+	CEdit m_help;
 };
 
 extern CDelta_dLApp theApp;

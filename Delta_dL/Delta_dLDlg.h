@@ -81,4 +81,5 @@ public:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg void OnEnChangeEditProdid();
 	afx_msg void OnBnClickedClosebtn();
+	afx_msg void OnBnClickedHelpbtn();
 };
