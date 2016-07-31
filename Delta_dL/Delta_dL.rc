@@ -141,31 +141,14 @@ BEGIN
     PUSHBUTTON      "操作说明",IDC_HELP_btn,474,299,95,21
 END
 
-IDD_HELP DIALOGEX 0, 0, 435, 280
-STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "操作手册"
-FONT 8, "MS Shell Dlg", 400, 0, 0x1
-BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,378,259,50,14
-    EDITTEXT        IDC_HELP_CONTENT,8,7,421,247,ES_MULTILINE | ES_READONLY | ES_WANTRETURN | WS_DISABLED | WS_VSCROLL | NOT WS_TABSTOP
-END
-
-IDD_STATIC_HELP DIALOGEX 0, 0, 316, 183
+IDD_HELP_DOC DIALOGEX 0, 0, 252, 183
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
-CAPTION "操作手册"
+CAPTION "操作说明"
 FONT 12, "Microsoft Sans Serif", 400, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "确定",IDOK,256,162,50,14
-    LTEXT           "（2）本设备仅适用于普通单模光纤，目前暂不支持特种光纤如保偏光纤等偏振敏感光纤干涉仪的臂长差测试。",IDC_STATIC,7,39,389,8
-    LTEXT           "（3）本设备测量范围0-400米之间粗分为四挡量程。对于有些待测光纤臂长差介于两档之间的光纤链路，虽然两档都可以得到测量结果的情况，应当选择量程使得测量的波数落在6-36之间，波数越接近此值，测量结果越准确。",IDC_STATIC,7,55,790,8
-    LTEXT           "（4）点击“保存数据”按钮，数据保存位置在硬盘：C：/ DeltaDLData目录下。子目录名称为：输入的型号+产品编号名，保存的文件名称为测量日期时间格式命名的文件名，文件形式为*.txt格式。",IDC_STATIC,7,71,681,8
-    LTEXT           "（5）由于光纤存在色散效应，不同测试光波长对应有不同的色散引起的光信号延迟效应，本设备测试光波长对应于C 波段，因此测量结果对应于C 波段光纤长度。",IDC_STATIC,7,87,570,8
-    LTEXT           "（6）不同光纤适配器连接时由于存在回波引起的干扰以及匹配不善引入的间隙不确定，不同光纤适配器连接时需要匹配转接。并且尽量减少连接器数量。",IDC_STATIC,7,103,541,8
-    LTEXT           "（7）光纤接口连接不同待测元件连接器时，由于连接器接触其附带的灰尘将引起光路连接不良，具体表现链路损耗增加。因此需要及时确保待测元件接头清洁无灰尘。",IDC_STATIC,7,119,589,8
-    LTEXT           "（8）光纤接口经使用不善将引起光路连接不良、损耗明显增加情况下，需要清洁面板内的光纤接头，具体步骤打开机箱上盖板后，退出面板内部光纤连接器接头螺纹，按照清洁光纤接头做法清洗光纤连接头后，重新装入面板内连接器并恢复机箱原始状态。",IDC_STATIC,7,135,901,8
-    LTEXT           "（1）光纤长度精密测量仪属于精密类光纤产品，使用与搬运时注意防震与跌落。",IDC_STATIC,7,24,299,8
-    GROUPBOX        "光纤长度精密测量仪操作说明：",IDC_STATIC,7,6,299,148
-    SCROLLBAR       IDC_SCROLLBAR1,306,0,9,154,SBS_VERT
+    DEFPUSHBUTTON   "确定",IDOK,195,162,50,14
+    EDITTEXT        IDC_HELP_CONTENT,7,18,238,139,ES_MULTILINE | ES_READONLY | ES_WANTRETURN | WS_VSCROLL
+    LTEXT           "光纤长度精密测量仪操作说明：",IDC_STATIC,7,7,101,8
 END
 
 
@@ -233,18 +216,10 @@ BEGIN
         BOTTOMMARGIN, 334
     END
 
-    IDD_HELP, DIALOG
+    IDD_HELP_DOC, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 428
-        TOPMARGIN, 7
-        BOTTOMMARGIN, 273
-    END
-
-    IDD_STATIC_HELP, DIALOG
-    BEGIN
-        LEFTMARGIN, 7
-        RIGHTMARGIN, 306
+        RIGHTMARGIN, 245
         TOPMARGIN, 7
         BOTTOMMARGIN, 176
     END

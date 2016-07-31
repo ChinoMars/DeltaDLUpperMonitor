@@ -199,7 +199,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\HelpDlg.cpp"
+				RelativePath=".\HelpDoc.cpp"
 				>
 			</File>
 			<File
@@ -216,10 +216,6 @@
 			</File>
 			<File
 				RelativePath=".\setupapi.lib"
-				>
-			</File>
-			<File
-				RelativePath=".\StaticHelp_Dlg.cpp"
 				>
 			</File>
 			<File
@@ -269,7 +265,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\HelpDlg.h"
+				RelativePath=".\HelpDoc.h"
 				>
 			</File>
 			<File
@@ -294,10 +290,6 @@
 			</File>
 			<File
 				RelativePath=".\Resource.h"
-				>
-			</File>
-			<File
-				RelativePath=".\StaticHelp_Dlg.h"
 				>
 			</File>
 			<File
